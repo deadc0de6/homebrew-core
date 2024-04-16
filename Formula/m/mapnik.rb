@@ -6,7 +6,7 @@ class Mapnik < Formula
       tag:      "v4.0.0",
       revision: "85801bd4028fa1cbffd9f7de4e2458bfc55e44bd"
   license "LGPL-2.1-or-later"
-  revision 1
+  revision 2
   head "https://github.com/mapnik/mapnik.git", branch: "master"
 
   livecheck do
@@ -31,7 +31,7 @@ class Mapnik < Formula
   depends_on "freetype"
   depends_on "gdal"
   depends_on "harfbuzz"
-  depends_on "icu4c"
+  depends_on "icu4c@75"
   depends_on "jpeg-turbo"
   depends_on "libpng"
   depends_on "libpq"
