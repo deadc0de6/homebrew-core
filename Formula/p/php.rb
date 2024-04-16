@@ -6,6 +6,7 @@ class Php < Formula
   mirror "https://fossies.org/linux/www/php-8.3.10.tar.xz"
   sha256 "a0f2179d00931fe7631a12cbc3428f898ca3d99fe564260c115af381d2a1978d"
   license "PHP-3.01"
+  revision 1
 
   livecheck do
     url "https://www.php.net/downloads"
@@ -41,7 +42,7 @@ class Php < Formula
   depends_on "gd"
   depends_on "gettext"
   depends_on "gmp"
-  depends_on "icu4c"
+  depends_on "icu4c@75"
   depends_on "krb5"
   depends_on "libpq"
   depends_on "libsodium"
