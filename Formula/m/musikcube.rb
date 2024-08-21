@@ -3,7 +3,16 @@ class Musikcube < Formula
   homepage "https://musikcube.com"
   url "https://github.com/clangen/musikcube/archive/refs/tags/3.0.4.tar.gz"
   sha256 "25bb95b8705d8c79bde447e7c7019372eea7eaed9d0268510278e7fcdb1378a5"
-  license "BSD-3-Clause"
+  license all_of: [
+    "BSD-3-Clause",
+    "GPL-2.0-or-later", # src/plugins/supereqdsp/supereq/
+    "LGPL-2.1-or-later", # src/plugins/pulseout/pulse_blocking_stream.c (Linux)
+    "BSL-1.0", # src/3rdparty/include/utf8/
+    "MIT", # src/3rdparty/include/{nlohmann,sqlean}/, src/3rdparty/include/websocketpp/utf8_validator.hpp
+    "Zlib", # src/3rdparty/include/websocketpp/base64/base64.hpp
+    "bcrypt-Solar-Designer", # src/3rdparty/{include,src}/md5.*
+    "blessing", # src/3rdparty/{include,src}/sqlite/sqlite3*
+  ]
   head "https://github.com/clangen/musikcube.git", branch: "master"
 
   livecheck do
@@ -26,26 +35,33 @@ class Musikcube < Formula
 
   depends_on "ffmpeg"
   depends_on "game-music-emu"
-  depends_on "gnutls"
   depends_on "lame"
   depends_on "libev"
   depends_on "libmicrohttpd"
-  depends_on "libogg"
   depends_on "libopenmpt"
-  depends_on "libvorbis"
-  depends_on :macos
   depends_on "ncurses"
   depends_on "openssl@3"
+  depends_on "portaudio"
   depends_on "taglib"
 
   uses_from_macos "curl"
+  uses_from_macos "zlib"
 
   on_macos do
+    depends_on "gnutls"
     depends_on "mpg123"
-    depends_on "portaudio"
+  end
+
+  on_linux do
+    depends_on "alsa-lib"
+    depends_on "pulseaudio"
+    depends_on "systemd"
   end
 
   def install
+    # Pretend to be Nix to dynamically link ncurses on macOS.
+    ENV["NIX_CC"] = ENV.cc
+
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
@@ -53,9 +69,12 @@ class Musikcube < Formula
 
   test do
     system bin/"musikcubed", "--start"
-    system "sleep", "5"
+    sleep 5
     assert_path_exists "/tmp/musikcubed.lock"
-    system "sleep", "5"
+    system "cat", "/tmp/musikcubed.lock"
+    system "ps", "aux"
+    sleep 10
     system bin/"musikcubed", "--stop"
+    system "ps", "aux"
   end
 end
