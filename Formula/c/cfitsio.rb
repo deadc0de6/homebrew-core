@@ -1,8 +1,8 @@
 class Cfitsio < Formula
   desc "C access to FITS data files with optional Fortran wrappers"
   homepage "https://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html"
-  url "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/cfitsio-4.4.1.tar.gz"
-  sha256 "66a1dc3f21800f9eeabd9eac577b91fcdd9aabba678fbba3b8527319110d1d25"
+  url "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/cfitsio-4.5.0.tar.gz"
+  sha256 "e4854fc3365c1462e493aa586bfaa2f3d0bb8c20b75a524955db64c27427ce09"
   license "CFITSIO"
 
   livecheck do
@@ -20,14 +20,13 @@ class Cfitsio < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:   "7aa412137e37b4faac67cfe2f30ebc3ad52a97b5658bc64a476131d461d14c8b"
   end
 
+  depends_on "cmake" => :build
   uses_from_macos "zlib"
 
   def install
-    system "./configure", "--prefix=#{prefix}", "--enable-reentrant"
-    system "make", "shared"
-    system "make", "fpack"
-    system "make", "funpack"
-    system "make", "install"
+    system "cmake", "-S", ".", "-B", "build", *std_cmake_args
+    system "cmake", "--build", "build"
+    system "cmake", "--install", "build"
     (pkgshare/"testprog").install Dir["testprog*", "utilities/testprog.c"]
   end
 
