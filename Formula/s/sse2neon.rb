@@ -14,26 +14,30 @@ class Sse2neon < Formula
   depends_on arch: :arm64
 
   def install
-    include.install "sse2neon.h"
+    (include/"sse2neon").install "sse2neon.h"
+    include.install_symlink "sse2neon/sse2neon.h"
   end
 
   test do
-    (testpath/"test.c").write <<~EOS
-      #include <assert.h>
-      #include <sse2neon.h>
+    %w[sse2neon sse2neon/sse2neon].each do |include_path|
+      test_name = include_path.tr("/", "-")
+      (testpath/"#{test_name}.c").write <<~EOS
+        #include <assert.h>
+        #include <#{include_path}.h>
 
-      int main() {
-        int64_t a = 1, b = 2;
-        assert(vaddd_s64(a, b) == 3);
-        __m128i z = _mm_setzero_si128();
-        __m128i v = _mm_undefined_si128();
-        v = _mm_xor_si128(v, v);
-        assert(_mm_movemask_epi8(_mm_cmpeq_epi8(v, z)) == 0xFFFF);
-        return 0;
-      }
-    EOS
+        int main() {
+          int64_t a = 1, b = 2;
+          assert(vaddd_s64(a, b) == 3);
+          __m128i z = _mm_setzero_si128();
+          __m128i v = _mm_undefined_si128();
+          v = _mm_xor_si128(v, v);
+          assert(_mm_movemask_epi8(_mm_cmpeq_epi8(v, z)) == 0xFFFF);
+          return 0;
+        }
+      EOS
 
-    system ENV.cc, "test.c", "-o", "test"
-    system "./test"
+      system "make", test_name
+      system testpath/test_name
+    end
   end
 end
