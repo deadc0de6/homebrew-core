@@ -1,8 +1,8 @@
 class Spoofdpi < Formula
   desc "Simple and fast anti-censorship tool written in Go"
   homepage "https://github.com/xvzc/SpoofDPI"
-  url "https://github.com/xvzc/SpoofDPI/archive/refs/tags/v0.10.12.tar.gz"
-  sha256 "c3b4d903a8a210f539727bfb7afa075d4e132a2cd8402481fa55f7a0606217a2"
+  url "https://github.com/xvzc/SpoofDPI/archive/refs/tags/v0.11.0.tar.gz"
+  sha256 "3f4c9e144870afd0f39796e43433de5fd444492f86bf7740a11ce7169ab893ec"
   license "Apache-2.0"
   head "https://github.com/xvzc/SpoofDPI.git", branch: "main"
 
